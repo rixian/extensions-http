@@ -8,17 +8,22 @@ namespace Rixian.Extensions.Http
     using System.Net.Http.Headers;
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Options;
     using Rixian.Extensions.Tokens;
 
-    public class TokenClientMessageHandler : DelegatingHandler
+    /// <summary>
+    /// Configures the Authentication header with the Bearer scheme and uses the AccessToken property of the ITokenClient.
+    /// </summary>
+    internal class TokenClientMessageHandler : DelegatingHandler
     {
-        private readonly ITokenClient tokenManager;
+        private readonly ITokenClient tokenClient;
 
-        public TokenClientMessageHandler(ITokenClient tokenManager)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenClientMessageHandler"/> class.
+        /// </summary>
+        /// <param name="tokenClient">The ITokenClient to use.</param>
+        public TokenClientMessageHandler(ITokenClient tokenClient)
         {
-            this.tokenManager = tokenManager;
+            this.tokenClient = tokenClient;
         }
 
         /// <inheritdoc/>
@@ -29,10 +34,10 @@ namespace Rixian.Extensions.Http
                 throw new ArgumentNullException(nameof(request));
             }
 
-            ITokenInfo token = await this.tokenManager.GetTokenAsync().ConfigureAwait(false);
+            ITokenInfo token = await this.tokenClient.GetTokenAsync().ConfigureAwait(false);
             if (token != null)
             {
-                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token.AccessToken);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
             }
 
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
