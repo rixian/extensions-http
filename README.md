@@ -1,27 +1,81 @@
-# Your Library
+# Rixian HttpClient Extensions
 
-***An awesome template for your awesome library***
+**This library provides extension methods for setting up an HttpClient.**
 
 [![NuGet package](https://img.shields.io/nuget/v/Rixian.Extensions.Http.svg)](https://nuget.org/packages/Rixian.Extensions.Http)
 [![codecov](https://codecov.io/gh/rixian/extensions-http/branch/master/graph/badge.svg)](https://codecov.io/gh/rixian/extensions-http)
 
 ## Features
 
-* Follow the best and simplest patterns of build, pack and test with dotnet CLI.
-* Static analyzers: [FxCop](https://docs.microsoft.com/en-us/visualstudio/code-quality/fxcop-analyzers?view=vs-2019) and [StyleCop](https://github.com/DotNetAnalyzers/StyleCopAnalyzers)
-* Read-only source tree (builds to top-level bin/obj folders)
-* Auto-versioning (via [Nerdbank.GitVersioning](https://github.com/aarnott/nerdbank.gitversioning))
-* Azure Pipeline via YAML with all dependencies declared for long-term serviceability.
-* Testing on .NET Framework, multiple .NET Core versions
-* Testing on Windows, Linux and OSX
-* Code coverage published to Azure Pipelines
-* Code coverage published to codecov.io so GitHub PRs get code coverage results added as a PR comment
+* Configure an [ITokenClient](https://github.com/rixian/extensions-tokens) as the source of the Authorization header.
+* Configure the Authorization header with a static Bearer token value.
+* Configure any header with a static value.
 
-## Consumption
+## Usage
 
-Once you've expanded this template for your own use, you should **run the `Expand-Template.ps1` script** to customize the template for your own project.
+### ITokenClient - Named
+```csharp
+IServiceCollection services = ...;
 
-Further customize your repo by:
+services.AddTokenClient("tokenClient123", ...);
 
-1. Verify the license is suitable for your goal as it appears in the LICENSE and stylecop.json files and the Directory.Build.props file's `PackageLicenseExpression` property.
-1. Reset or replace the badges at the top of this file.
+services.AddHttpClient("test")
+    .AddTokenClient("tokenClient123"); // Adds the header "Authorization: Bearer {access_token}"
+```
+
+### ITokenClient - DI Lookup
+```csharp
+IServiceCollection services = ...;
+
+services.AddTokenClient(...);
+
+services.AddHttpClient("test")
+    .AddTokenClient(svc =>
+    {
+        return svc
+            .GetRequiredService<ITokenClientFactory>()
+            .GetTokenClient();
+    }); // Adds the header "Authorization: Bearer {access_token}"
+```
+
+### ITokenClient - Direct Instance
+```csharp
+IServiceCollection services = ...;
+
+ITokenClient tokenClient = ...;
+
+services.AddHttpClient("test")
+    .AddTokenClient(tokenClient); // Adds the header "Authorization: Bearer {access_token}"
+```
+
+### Static Bearer Token
+```csharp
+IServiceCollection services = ...;
+
+string bearerToken = "REPLACE_ME";
+
+services.AddHttpClient("test")
+    .AddBearerToken(bearerToken); // Adds the header "Authorization: Bearer REPLACE_ME"
+```
+
+### Static Authorization Header
+```csharp
+IServiceCollection services = ...;
+
+string scheme = "HDR_SCHEME";
+string parameter = "HDR_PARAM";
+
+services.AddHttpClient("test")
+    .AddAuthorizationHeader(scheme, parameter); // Adds the header "Authorization: HDR_SCHEME HDR_PARAM"
+```
+
+### Static Header
+```csharp
+IServiceCollection services = ...;
+
+string name = "HDR_NAME";
+string value = "HDR_VALUE";
+
+services.AddHttpClient("test")
+    .AddHeader(name, value); // Adds the header "HDR_NAME: HDR_VALUE"
+```
