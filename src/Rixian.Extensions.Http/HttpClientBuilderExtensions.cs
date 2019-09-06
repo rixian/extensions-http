@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="httpClientBuilder">The IHttpClintBuilder.</param>
         /// <param name="tokenClientName">The logical name of the ITokenClient.</param>
         /// <returns>The same IHttpClientBuilder.</returns>
-        public static IHttpClientBuilder AddTokenClient(this IHttpClientBuilder httpClientBuilder, string tokenClientName)
+        public static IHttpClientBuilder UseTokenClient(this IHttpClientBuilder httpClientBuilder, string tokenClientName)
         {
             return httpClientBuilder.AddHttpMessageHandler(svc =>
             {
@@ -47,7 +47,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="httpClientBuilder">The IHttpClintBuilder.</param>
         /// <param name="getTokenClient">Delegate that pulls the ITokenCLient instance from the DI container.</param>
         /// <returns>The same IHttpClientBuilder.</returns>
-        public static IHttpClientBuilder AddTokenClient(this IHttpClientBuilder httpClientBuilder, Func<IServiceProvider, ITokenClient> getTokenClient)
+        public static IHttpClientBuilder UseTokenClient(this IHttpClientBuilder httpClientBuilder, Func<IServiceProvider, ITokenClient> getTokenClient)
         {
             return httpClientBuilder.AddHttpMessageHandler(svc => new TokenClientMessageHandler(getTokenClient(svc)));
         }
@@ -58,7 +58,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="httpClientBuilder">The IHttpClintBuilder.</param>
         /// <param name="tokenClient">The ITokenClient to use.</param>
         /// <returns>The same IHttpClientBuilder.</returns>
-        public static IHttpClientBuilder AddTokenClient(this IHttpClientBuilder httpClientBuilder, ITokenClient tokenClient)
+        public static IHttpClientBuilder UseTokenClient(this IHttpClientBuilder httpClientBuilder, ITokenClient tokenClient)
         {
             return httpClientBuilder.AddHttpMessageHandler(() => new TokenClientMessageHandler(tokenClient));
         }
@@ -69,9 +69,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="httpClientBuilder">The IHttpClintBuilder.</param>
         /// <param name="bearerToken">The bearer token.</param>
         /// <returns>The same IHttpClientBuilder.</returns>
-        public static IHttpClientBuilder AddBearerToken(this IHttpClientBuilder httpClientBuilder, string bearerToken)
+        public static IHttpClientBuilder UseBearerToken(this IHttpClientBuilder httpClientBuilder, string bearerToken)
         {
-            return httpClientBuilder.AddAuthorizationHeader("Bearer", bearerToken);
+            return httpClientBuilder.UseAuthorizationHeader("Bearer", bearerToken);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="scheme">The scheme to use.</param>
         /// <param name="parameter">The auth value to place in the header.</param>
         /// <returns>The same IHttpClientBuilder.</returns>
-        public static IHttpClientBuilder AddAuthorizationHeader(this IHttpClientBuilder httpClientBuilder, string scheme, string parameter)
+        public static IHttpClientBuilder UseAuthorizationHeader(this IHttpClientBuilder httpClientBuilder, string scheme, string parameter)
         {
             return httpClientBuilder.ConfigureHttpClient(client => client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme, parameter));
         }
@@ -93,7 +93,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="name">The name of the header.</param>
         /// <param name="value">The header value.</param>
         /// <returns>The same IHttpClientBuilder.</returns>
-        public static IHttpClientBuilder AddHeader(this IHttpClientBuilder httpClientBuilder, string name, string value)
+        public static IHttpClientBuilder UseHeader(this IHttpClientBuilder httpClientBuilder, string name, string value)
         {
             return httpClientBuilder.ConfigureHttpClient(client => client.DefaultRequestHeaders.TryAddWithoutValidation(name, value));
         }

@@ -23,7 +23,7 @@ public class HttpClientExtenstionsTests
     }
 
     [Fact]
-    public async Task AddBearerToken_Default_Success()
+    public async Task UseBearerToken_Default_Success()
     {
         var bearerToken = Guid.NewGuid().ToString();
         var mockHttp = new MockHttpMessageHandler();
@@ -34,7 +34,7 @@ public class HttpClientExtenstionsTests
 
         HttpClient httpClient = GetTestHttpClient(mockHttp, b =>
         {
-            b.AddBearerToken(bearerToken);
+            b.UseBearerToken(bearerToken);
         });
 
         _ = await httpClient.GetAsync(new Uri("http://localhost")).ConfigureAwait(false);
@@ -43,7 +43,7 @@ public class HttpClientExtenstionsTests
     }
 
     [Fact]
-    public async Task AddBearerToken_NullToken_Success()
+    public async Task UseBearerToken_NullToken_Success()
     {
         string bearerToken = null;
         var mockHttp = new MockHttpMessageHandler();
@@ -54,7 +54,7 @@ public class HttpClientExtenstionsTests
 
         HttpClient httpClient = GetTestHttpClient(mockHttp, b =>
         {
-            b.AddBearerToken(bearerToken);
+            b.UseBearerToken(bearerToken);
         });
 
         _ = await httpClient.GetAsync(new Uri("http://localhost")).ConfigureAwait(false);
@@ -63,7 +63,7 @@ public class HttpClientExtenstionsTests
     }
 
     [Fact]
-    public async Task AddBearerToken_EmptyToken_Success()
+    public async Task UseBearerToken_EmptyToken_Success()
     {
         string bearerToken = null;
         var mockHttp = new MockHttpMessageHandler();
@@ -74,7 +74,7 @@ public class HttpClientExtenstionsTests
 
         HttpClient httpClient = GetTestHttpClient(mockHttp, b =>
         {
-            b.AddBearerToken(bearerToken);
+            b.UseBearerToken(bearerToken);
         });
 
         _ = await httpClient.GetAsync(new Uri("http://localhost")).ConfigureAwait(false);
@@ -95,7 +95,7 @@ public class HttpClientExtenstionsTests
 
         HttpClient httpClient = GetTestHttpClient(mockHttp, b =>
         {
-            b.AddHeader(headerName, headerValue);
+            b.UseHeader(headerName, headerValue);
         });
 
         _ = await httpClient.GetAsync(new Uri("http://localhost")).ConfigureAwait(false);
@@ -120,7 +120,7 @@ public class HttpClientExtenstionsTests
 
         HttpClient httpClient = GetTestHttpClient(mockHttp, b =>
         {
-            b.AddTokenClient(tokenClient);
+            b.UseTokenClient(tokenClient);
         });
 
         _ = await httpClient.GetAsync(new Uri("http://localhost")).ConfigureAwait(false);
@@ -149,7 +149,7 @@ public class HttpClientExtenstionsTests
             mockHttp,
             b =>
             {
-                b.AddTokenClient(svc => svc.GetRequiredService<ITokenClientFactory>().GetTokenClient());
+                b.UseTokenClient(svc => svc.GetRequiredService<ITokenClientFactory>().GetTokenClient());
             },
             svc =>
             {
@@ -184,7 +184,7 @@ public class HttpClientExtenstionsTests
             mockHttp,
             b =>
             {
-                b.AddTokenClient(tokenClientName);
+                b.UseTokenClient(tokenClientName);
             },
             svc =>
             {
