@@ -13,7 +13,6 @@ jobs:
     displayName: Set build number
 
   - template: dotnet.yml
-  - template: expand-template.yml
 
 - job: Linux
   pool:
