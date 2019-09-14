@@ -5,7 +5,9 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     using System;
     using System.Globalization;
+    using System.Net.Http;
     using System.Net.Http.Headers;
+    using System.Security.Authentication;
     using Rixian.Extensions.Http;
     using Rixian.Extensions.Tokens;
 
@@ -17,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Configures the HttpClient to use the AccessToken retrieved from an ITokenClient in the Authorization header.
         /// </summary>
-        /// <param name="httpClientBuilder">The IHttpClintBuilder.</param>
+        /// <param name="httpClientBuilder">The IHttpClientBuilder.</param>
         /// <param name="tokenClientName">The logical name of the ITokenClient.</param>
         /// <returns>The same IHttpClientBuilder.</returns>
         public static IHttpClientBuilder UseTokenClient(this IHttpClientBuilder httpClientBuilder, string tokenClientName)
@@ -36,7 +38,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     throw new HttpClientConfigurationException(string.Format(CultureInfo.InvariantCulture, "No ITokenClient registered with the name '{0}'.", tokenClientName));
                 }
 
-                var handler = new TokenClientMessageHandler(tokenClient);
+                var handler = new TokenClientDelegatingHandler(tokenClient);
                 return handler;
             });
         }
@@ -44,29 +46,29 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Configures the HttpClient to use the AccessToken retrieved from an ITokenClient in the Authorization header.
         /// </summary>
-        /// <param name="httpClientBuilder">The IHttpClintBuilder.</param>
+        /// <param name="httpClientBuilder">The IHttpClientBuilder.</param>
         /// <param name="getTokenClient">Delegate that pulls the ITokenCLient instance from the DI container.</param>
         /// <returns>The same IHttpClientBuilder.</returns>
         public static IHttpClientBuilder UseTokenClient(this IHttpClientBuilder httpClientBuilder, Func<IServiceProvider, ITokenClient> getTokenClient)
         {
-            return httpClientBuilder.AddHttpMessageHandler(svc => new TokenClientMessageHandler(getTokenClient(svc)));
+            return httpClientBuilder.AddHttpMessageHandler(svc => new TokenClientDelegatingHandler(getTokenClient(svc)));
         }
 
         /// <summary>
         /// Configures the HttpClient to use the AccessToken retrieved from an ITokenClient in the Authorization header.
         /// </summary>
-        /// <param name="httpClientBuilder">The IHttpClintBuilder.</param>
+        /// <param name="httpClientBuilder">The IHttpClientBuilder.</param>
         /// <param name="tokenClient">The ITokenClient to use.</param>
         /// <returns>The same IHttpClientBuilder.</returns>
         public static IHttpClientBuilder UseTokenClient(this IHttpClientBuilder httpClientBuilder, ITokenClient tokenClient)
         {
-            return httpClientBuilder.AddHttpMessageHandler(() => new TokenClientMessageHandler(tokenClient));
+            return httpClientBuilder.AddHttpMessageHandler(() => new TokenClientDelegatingHandler(tokenClient));
         }
 
         /// <summary>
         /// Configures the HttpClient to use the bearer token in the Authorization header.
         /// </summary>
-        /// <param name="httpClientBuilder">The IHttpClintBuilder.</param>
+        /// <param name="httpClientBuilder">The IHttpClientBuilder.</param>
         /// <param name="bearerToken">The bearer token.</param>
         /// <returns>The same IHttpClientBuilder.</returns>
         public static IHttpClientBuilder UseBearerToken(this IHttpClientBuilder httpClientBuilder, string bearerToken)
@@ -77,7 +79,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Configures the HttpClient to use a specific Authorization header.
         /// </summary>
-        /// <param name="httpClientBuilder">The IHttpClintBuilder.</param>
+        /// <param name="httpClientBuilder">The IHttpClientBuilder.</param>
         /// <param name="scheme">The scheme to use.</param>
         /// <param name="parameter">The auth value to place in the header.</param>
         /// <returns>The same IHttpClientBuilder.</returns>
@@ -89,13 +91,47 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Configures the HttpClient to use a specific header.
         /// </summary>
-        /// <param name="httpClientBuilder">The IHttpClintBuilder.</param>
+        /// <param name="httpClientBuilder">The IHttpClientBuilder.</param>
         /// <param name="name">The name of the header.</param>
         /// <param name="value">The header value.</param>
         /// <returns>The same IHttpClientBuilder.</returns>
         public static IHttpClientBuilder UseHeader(this IHttpClientBuilder httpClientBuilder, string name, string value)
         {
             return httpClientBuilder.ConfigureHttpClient(client => client.DefaultRequestHeaders.TryAddWithoutValidation(name, value));
+        }
+
+        /// <summary>
+        /// Configures the primary HttpClientHandler to use the specified SslProtocols.
+        /// </summary>
+        /// <param name="httpClientBuilder">The IHttpClientBuilder.</param>
+        /// <param name="sslProtocols">The SslProtocols to use.</param>
+        /// <returns>The same IHttpClientBuilder.</returns>
+        public static IHttpClientBuilder UseSslProtocols(this IHttpClientBuilder httpClientBuilder, SslProtocols sslProtocols)
+        {
+            return httpClientBuilder.ConfigureHttpMessageHandlerBuilder(b =>
+            {
+                if (b?.PrimaryHandler is HttpClientHandler httpClientHandler)
+                {
+                    httpClientHandler.SslProtocols = sslProtocols;
+                }
+            });
+        }
+
+        /// <summary>
+        /// Configures the primary HttpClientHandler to use the specified MaxRequestContentBufferSize.
+        /// </summary>
+        /// <param name="httpClientBuilder">The IHttpClientBuilder.</param>
+        /// <param name="maxRequestContentBufferSize">The MaxRequestContentBufferSize.</param>
+        /// <returns>The same IHttpClientBuilder.</returns>
+        public static IHttpClientBuilder UseMaxRequestContentBufferSize(this IHttpClientBuilder httpClientBuilder, long maxRequestContentBufferSize)
+        {
+            return httpClientBuilder.ConfigureHttpMessageHandlerBuilder(b =>
+            {
+                if (b?.PrimaryHandler is HttpClientHandler httpClientHandler)
+                {
+                    httpClientHandler.MaxRequestContentBufferSize = maxRequestContentBufferSize;
+                }
+            });
         }
     }
 }

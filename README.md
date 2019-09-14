@@ -7,11 +7,20 @@
 
 ## Features
 
+* Configure Basic HttlClient properties, such as SSL Protocols.
 * Configure an [ITokenClient](https://github.com/rixian/extensions-tokens) as the source of the Authorization header.
 * Configure the Authorization header with a static Bearer token value.
 * Configure any header with a static value.
 
 ## Usage
+
+### Use SSL Protocols
+```csharp
+IServiceCollection services = ...;
+
+services.AddHttpClient("test")
+    .UseSslProtocols(SslProtocols.Tls12); // Sets the primary HttpClientHandler to use TLS 1.2
+```
 
 ### ITokenClient - Named
 ```csharp

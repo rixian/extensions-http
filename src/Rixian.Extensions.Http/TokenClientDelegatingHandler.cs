@@ -13,15 +13,15 @@ namespace Rixian.Extensions.Http
     /// <summary>
     /// Configures the Authentication header with the Bearer scheme and uses the AccessToken property of the ITokenClient.
     /// </summary>
-    internal class TokenClientMessageHandler : DelegatingHandler
+    public class TokenClientDelegatingHandler : DelegatingHandler
     {
         private readonly ITokenClient tokenClient;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TokenClientMessageHandler"/> class.
+        /// Initializes a new instance of the <see cref="TokenClientDelegatingHandler"/> class.
         /// </summary>
         /// <param name="tokenClient">The ITokenClient to use.</param>
-        public TokenClientMessageHandler(ITokenClient tokenClient)
+        public TokenClientDelegatingHandler(ITokenClient tokenClient)
         {
             this.tokenClient = tokenClient;
         }
