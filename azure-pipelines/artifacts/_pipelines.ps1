@@ -1,12 +1,11 @@
 # This script translates all the artifacts described by _all.ps1
-# into commands that instruct VSTS to actually collect those artifacts.
+# into commands that instruct Azure Pipelines to actually collect those artifacts.
 
 param (
     [string]$ArtifactNameSuffix
 )
 
 $RepoRoot = [System.IO.Path]::GetFullPath("$PSScriptRoot\..\..")
-if (!$env:BUILDCONFIGURATION) { throw "BUILDCONFIGURATION environment variable must be set." }
 if ($env:BUILD_ARTIFACTSTAGINGDIRECTORY) {
     $ArtifactStagingFolder = $env:BUILD_ARTIFACTSTAGINGDIRECTORY
 } else {
@@ -30,7 +29,11 @@ function Create-SymbolicLink {
     $LinkContainer = Split-Path $Link -Parent
     if (!(Test-Path $LinkContainer)) { mkdir $LinkContainer }
     Write-Verbose "Linking $Link to $Target"
-    ln $Target $Link
+    if ($IsMacOS -or $IsLinux) {
+        ln $Target $Link
+    } else {
+        cmd /c mklink $Link $Target
+    }
 }
 
 # Stage all artifacts
