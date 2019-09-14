@@ -23,7 +23,6 @@ jobs:
     clean: true
   - template: install-dependencies.yml
   - template: dotnet.yml
-  - template: expand-template.yml
 
 - job: macOS
   pool:
@@ -33,7 +32,6 @@ jobs:
     clean: true
   - template: install-dependencies.yml
   - template: dotnet.yml
-  - template: expand-template.yml
 
 - job: WrapUp
   dependsOn:
