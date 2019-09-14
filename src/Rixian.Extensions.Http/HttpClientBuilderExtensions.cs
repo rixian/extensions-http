@@ -141,7 +141,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="version">The api version to use.</param>
         /// <param name="queryParamName">The name of the query parameter.</param>
         /// <returns>The same IHttpClientBuilder.</returns>
-        public static IHttpClientBuilder UseApiVersion(this IHttpClientBuilder httpClientBuilder, string version, string queryParamName)
+        public static IHttpClientBuilder UseApiVersion(this IHttpClientBuilder httpClientBuilder, string version, string queryParamName = null)
         {
             var options = new ApiVersionQueryOptions
             {
