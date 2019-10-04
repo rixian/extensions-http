@@ -4,11 +4,7 @@
 namespace Rixian.Extensions.Http.Client
 {
     using System;
-    using System.Collections.Generic;
     using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Net.Mime;
-    using System.Text;
 
     /// <summary>
     /// Convenience extensions for setting the HttpMethod.

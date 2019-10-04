@@ -5,7 +5,6 @@ namespace Rixian.Extensions.Http.Client
 {
     using System;
     using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
     /// Entry point for creating an IUrlBuilder.
