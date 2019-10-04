@@ -25,6 +25,11 @@ namespace Rixian.Extensions.Http.Client
                 throw new ArgumentNullException(nameof(responseMessage));
             }
 
+            if (responseMessage.Content == null)
+            {
+                return default;
+            }
+
             var json = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
             T result = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
             return result;

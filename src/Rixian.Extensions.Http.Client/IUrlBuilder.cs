@@ -13,16 +13,6 @@ namespace Rixian.Extensions.Http.Client
     public interface IUrlBuilder
     {
         /// <summary>
-        /// Gets or sets the scheme part of the url.
-        /// </summary>
-        string Scheme { get; set; }
-
-        /// <summary>
-        /// Gets or sets the port part of the url.
-        /// </summary>
-        int Port { get; set; }
-
-        /// <summary>
         /// Gets or sets the path part of the url.
         /// </summary>
         string Path { get; set; }
@@ -31,11 +21,6 @@ namespace Rixian.Extensions.Http.Client
         /// Gets or sets the fragment part of the url.
         /// </summary>
         string Fragment { get; set; }
-
-        /// <summary>
-        /// Gets or sets the host part of the url.
-        /// </summary>
-        string Host { get; set; }
 
         /// <summary>
         /// Gets the query parameters of the url.

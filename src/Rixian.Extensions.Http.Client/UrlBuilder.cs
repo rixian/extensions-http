@@ -35,43 +35,37 @@ namespace Rixian.Extensions.Http.Client
 
         private class InternalUrlBuilder : IUrlBuilder
         {
-            private readonly UriBuilder uriBuilder;
-
             public InternalUrlBuilder()
             {
-                this.uriBuilder = new UriBuilder();
+                this.Path = "/";
             }
 
-            public InternalUrlBuilder(string url)
+            public InternalUrlBuilder(string path)
             {
-                this.uriBuilder = new UriBuilder(url);
+                this.Path = path;
             }
 
             /// <inheritdoc/>
             public ICollection<KeyValuePair<string, string>> QueryParams { get; } = new List<KeyValuePair<string, string>>();
 
             /// <inheritdoc/>
-            public string Scheme { get => this.uriBuilder.Scheme; set => this.uriBuilder.Scheme = value; }
+            public string Path { get; set; }
 
             /// <inheritdoc/>
-            public int Port { get => this.uriBuilder.Port; set => this.uriBuilder.Port = value; }
-
-            /// <inheritdoc/>
-            public string Path { get => this.uriBuilder.Path; set => this.uriBuilder.Path = value; }
-
-            /// <inheritdoc/>
-            public string Fragment { get => this.uriBuilder.Fragment; set => this.uriBuilder.Fragment = value; }
-
-            /// <inheritdoc/>
-            public string Host { get => this.uriBuilder.Host; set => this.uriBuilder.Host = value; }
+            public string Fragment { get; set; }
 
             /// <inheritdoc/>
             public Uri Uri
             {
                 get
                 {
-                    this.uriBuilder.Query = this.ToQueryString();
-                    return this.uriBuilder.Uri;
+                    var url = $"{this.Path}{this.ToQueryString()}";
+                    if (!string.IsNullOrWhiteSpace(this.Fragment))
+                    {
+                        url = $"{url}#{this.Fragment}";
+                    }
+
+                    return new Uri(url, UriKind.RelativeOrAbsolute);
                 }
             }
         }
