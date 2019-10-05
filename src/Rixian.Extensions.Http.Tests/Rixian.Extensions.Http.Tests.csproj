@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Rixian.Extensions.Http.Client\Rixian.Extensions.Http.Client.csproj" />
     <ProjectReference Include="..\Rixian.Extensions.Http\Rixian.Extensions.Http.csproj" />
   </ItemGroup>
 

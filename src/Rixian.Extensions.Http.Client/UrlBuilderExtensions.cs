@@ -46,8 +46,9 @@ namespace Rixian.Extensions.Http.Client
         /// <param name="key">The query parameter key.</param>
         /// <param name="value">The query parameter value.</param>
         /// <param name="ignoreIfNull">Ignores this query parameter if the value is null.</param>
+        /// <param name="escapeValue">Choose to uri escape the value.</param>
         /// <returns>The updated IUrlBuilder.</returns>
-        public static IUrlBuilder SetQueryParam(this IUrlBuilder urlBuilder, string key, object value, bool ignoreIfNull = true)
+        public static IUrlBuilder SetQueryParam(this IUrlBuilder urlBuilder, string key, object value, bool ignoreIfNull = true, bool escapeValue = true)
         {
             if (urlBuilder is null)
             {
@@ -59,11 +60,18 @@ namespace Rixian.Extensions.Http.Client
                 throw new ArgumentException(Properties.Resources.ParameterStringEmptyError, nameof(key));
             }
 
-            if (!ignoreIfNull)
+            if (ignoreIfNull && value == null)
             {
-                urlBuilder.QueryParams.Add(new KeyValuePair<string, string>(key, Uri.EscapeDataString(ConvertToString(value, CultureInfo.InvariantCulture))));
+                return urlBuilder;
             }
 
+            var stringValue = ConvertToString(value, CultureInfo.InvariantCulture);
+            if (escapeValue)
+            {
+                stringValue = Uri.EscapeDataString(stringValue);
+            }
+
+            urlBuilder.QueryParams.Add(new KeyValuePair<string, string>(key, stringValue));
             return urlBuilder;
         }
 
