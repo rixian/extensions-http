@@ -3,15 +3,23 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <Configurations>Debug;Release;ProjRef</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Rixian.Extensions.Errors" Version="0.1.17" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Rixian.Extensions.Http\Rixian.Extensions.Http.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' != 'ProjRef'">
+    <PackageReference Include="Rixian.Extensions.Errors" Version="0.1.17" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'ProjRef'">
+    <ProjectReference Include="..\..\..\extensions-errors\src\Rixian.Extensions.Errors\Rixian.Extensions.Errors.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -12,6 +12,10 @@ namespace Rixian.Extensions.Http.Client
     /// </summary>
     public static class HttpResponseMessageExtensions
     {
+        private const string ApplicationProblemJsonContentType = "application/problem+json";
+        private const string ApplicationProblemXmlContentType = "application/problem+xml";
+        private const string ApplicationProblemContentTypePrefix = "application/problem";
+
         /// <summary>
         /// Deserializes the response content as JSON into an object.
         /// </summary>
@@ -31,8 +35,25 @@ namespace Rixian.Extensions.Http.Client
             }
 
             var json = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+            Console.WriteLine("=========================");
+            Console.WriteLine(json);
+            Console.WriteLine("=========================");
+
             T result = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
             return result;
+        }
+
+        /// <summary>
+        /// Checks if the content type of the response message is a problem detail.
+        /// See: https://tools.ietf.org/html/rfc7807 for details.
+        /// </summary>
+        /// <param name="responseMessage">The HttpResponseMessage.</param>
+        /// <returns>True if the content type is a problem, otherwise false.</returns>
+        public static bool IsContentProblem(this HttpResponseMessage responseMessage)
+        {
+            return responseMessage?.Content?.Headers?.ContentType?.MediaType?.StartsWith(ApplicationProblemContentTypePrefix, StringComparison.OrdinalIgnoreCase) ?? false
+                || string.Equals(responseMessage?.Content?.Headers?.ContentType?.MediaType, ApplicationProblemJsonContentType, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(responseMessage?.Content?.Headers?.ContentType?.MediaType, ApplicationProblemXmlContentType, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

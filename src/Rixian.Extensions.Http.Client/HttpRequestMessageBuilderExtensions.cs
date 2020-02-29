@@ -16,12 +16,16 @@ namespace Rixian.Extensions.Http.Client
     public static class HttpRequestMessageBuilderExtensions
     {
         private const string ApplicationJsonContentType = "application/json";
+        private const string ApplicationProblemJsonContentType = "application/problem+json";
 
         private static readonly Lazy<MediaTypeWithQualityHeaderValue> ApplicationOctetHeader = new Lazy<MediaTypeWithQualityHeaderValue>(() =>
             MediaTypeWithQualityHeaderValue.Parse(MediaTypeNames.Application.Octet));
 
         private static readonly Lazy<MediaTypeWithQualityHeaderValue> ApplicationJsonHeader = new Lazy<MediaTypeWithQualityHeaderValue>(() =>
             MediaTypeWithQualityHeaderValue.Parse(ApplicationJsonContentType));
+
+        private static readonly Lazy<MediaTypeWithQualityHeaderValue> ApplicationProblemJsonHeader = new Lazy<MediaTypeWithQualityHeaderValue>(() =>
+            MediaTypeWithQualityHeaderValue.Parse(ApplicationProblemJsonContentType));
 
         private static readonly Lazy<MediaTypeWithQualityHeaderValue> TextXmlHeader = new Lazy<MediaTypeWithQualityHeaderValue>(() =>
             MediaTypeWithQualityHeaderValue.Parse(MediaTypeNames.Text.Xml));
@@ -125,6 +129,14 @@ namespace Rixian.Extensions.Http.Client
         /// <returns>The updated IHttpRequestBuilder instance.</returns>
         public static IHttpRequestMessageBuilder WithAcceptApplicationOctet(this IHttpRequestMessageBuilder builder) =>
             builder.WithAcceptHeader(ApplicationOctetHeader.Value);
+
+        /// <summary>
+        /// Sets the Accept header with the value 'application/problem+json'.
+        /// </summary>
+        /// <param name="builder">The IHttpRequestBuilder instance.</param>
+        /// <returns>The updated IHttpRequestBuilder instance.</returns>
+        public static IHttpRequestMessageBuilder WithAcceptApplicationProblemJson(this IHttpRequestMessageBuilder builder) =>
+            builder.WithAcceptHeader(ApplicationProblemJsonHeader.Value);
 
         /// <summary>
         /// Sets the Accept header with the value 'application/json'.

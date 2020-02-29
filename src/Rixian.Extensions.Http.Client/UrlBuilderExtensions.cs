@@ -59,12 +59,15 @@ namespace Rixian.Extensions.Http.Client
                 throw new ArgumentException(Properties.Resources.ParameterStringEmptyError, nameof(key));
             }
 
-            if (!ignoreIfNull)
+            if (value is null && ignoreIfNull)
+            {
+                return urlBuilder;
+            }
+            else
             {
                 urlBuilder.QueryParams.Add(new KeyValuePair<string, string>(key, Uri.EscapeDataString(ConvertToString(value, CultureInfo.InvariantCulture))));
+                return urlBuilder;
             }
-
-            return urlBuilder;
         }
 
         /// <summary>
