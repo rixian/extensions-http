@@ -46,5 +46,5 @@ jobs:
   - template: install-dependencies.yml
     parameters:
       initArgs: -NoRestore
-  - template: publish-codecoverage.yml
+  #- template: publish-codecoverage.yml # TODO: Add back
   - template: publish-deployables.yml
