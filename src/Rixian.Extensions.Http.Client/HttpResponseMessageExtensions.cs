@@ -35,9 +35,6 @@ namespace Rixian.Extensions.Http.Client
             }
 
             var json = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-            Console.WriteLine("=========================");
-            Console.WriteLine(json);
-            Console.WriteLine("=========================");
 
             T result = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
             return result;
