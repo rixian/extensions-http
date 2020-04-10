@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Configurations>Debug;Release;ProjRef</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,11 +13,11 @@
     <ProjectReference Include="..\Rixian.Extensions.Http\Rixian.Extensions.Http.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)' != 'ProjRef'">
+  <ItemGroup Condition="'$(Configuration)' != 'Debug'">
     <PackageReference Include="Rixian.Extensions.Errors" Version="0.2.9" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)' == 'ProjRef'">
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <ProjectReference Include="..\..\..\extensions-errors\src\Rixian.Extensions.Errors\Rixian.Extensions.Errors.csproj" />
   </ItemGroup>
 
