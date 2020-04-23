@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-      - microbuild
       - validate/*
+      - release/*
   pull_request:
 
 env:
