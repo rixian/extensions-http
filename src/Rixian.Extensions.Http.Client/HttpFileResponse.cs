@@ -19,8 +19,8 @@ namespace Rixian.Extensions.Http.Client
     /// </summary>
     public class HttpFileResponse : IDisposable
     {
-        private IDisposable responseMessage;
-        private bool disposedValue = false; // To detect redundant calls
+        private readonly IDisposable responseMessage;
+        private bool disposedValue; // To detect redundant calls
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpFileResponse"/> class.
