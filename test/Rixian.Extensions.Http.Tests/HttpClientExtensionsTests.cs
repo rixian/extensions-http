@@ -14,11 +14,11 @@ using Rixian.Extensions.Tokens;
 using Xunit;
 using Xunit.Abstractions;
 
-public class HttpClientExtenstionsTests
+public class HttpClientExtensionsTests
 {
     private readonly ITestOutputHelper logger;
 
-    public HttpClientExtenstionsTests(ITestOutputHelper logger)
+    public HttpClientExtensionsTests(ITestOutputHelper logger)
     {
         this.logger = logger;
     }
@@ -46,7 +46,7 @@ public class HttpClientExtenstionsTests
     [Fact]
     public async Task UseBearerToken_NullToken_Success()
     {
-        string bearerToken = null;
+        string? bearerToken = null;
         var mockHttp = new MockHttpMessageHandler();
         MockedRequest request = mockHttp
             .When("*")
@@ -55,7 +55,7 @@ public class HttpClientExtenstionsTests
 
         HttpClient httpClient = GetTestHttpClient(mockHttp, b =>
         {
-            b.UseBearerToken(bearerToken);
+            b.UseBearerToken(bearerToken! /* Null is under test */);
         });
 
         _ = await httpClient.GetAsync(new Uri("http://localhost")).ConfigureAwait(false);
@@ -66,7 +66,7 @@ public class HttpClientExtenstionsTests
     [Fact]
     public async Task UseBearerToken_EmptyToken_Success()
     {
-        string bearerToken = null;
+        string bearerToken = string.Empty;
         var mockHttp = new MockHttpMessageHandler();
         MockedRequest request = mockHttp
             .When("*")
@@ -197,7 +197,7 @@ public class HttpClientExtenstionsTests
         mockHttp.GetMatchCount(request).Should().Be(1);
     }
 
-    private static HttpClient GetTestHttpClient(MockHttpMessageHandler mockHttpMessageHandler, Action<IHttpClientBuilder> configureClient, Action<IServiceCollection> configureServices = null)
+    private static HttpClient GetTestHttpClient(MockHttpMessageHandler mockHttpMessageHandler, Action<IHttpClientBuilder> configureClient, Action<IServiceCollection>? configureServices = null)
     {
         var serviceCollection = new ServiceCollection();
         IHttpClientBuilder httpClientBuilder = serviceCollection.AddHttpClient("test");

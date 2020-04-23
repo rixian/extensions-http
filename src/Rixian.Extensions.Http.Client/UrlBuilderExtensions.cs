@@ -65,7 +65,7 @@ namespace Rixian.Extensions.Http.Client
             }
             else
             {
-                urlBuilder.QueryParams.Add(new KeyValuePair<string, string>(key, Uri.EscapeDataString(ConvertToString(value, CultureInfo.InvariantCulture))));
+                urlBuilder.QueryParams.Add(new KeyValuePair<string, string>(key, Uri.EscapeDataString(ConvertToString(value!, CultureInfo.InvariantCulture)))); // Checked with 'is null'
                 return urlBuilder;
             }
         }

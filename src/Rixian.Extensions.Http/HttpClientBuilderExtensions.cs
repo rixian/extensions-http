@@ -139,9 +139,25 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="httpClientBuilder">The IHttpClientBuilder.</param>
         /// <param name="version">The api version to use.</param>
+        /// <returns>The same IHttpClientBuilder.</returns>
+        public static IHttpClientBuilder UseApiVersion(this IHttpClientBuilder httpClientBuilder, string version)
+        {
+            var options = new ApiVersionQueryOptions
+            {
+                Value = version,
+            };
+
+            return httpClientBuilder.AddHttpMessageHandler(() => new ApiVersionQueryParamDelegatingHandler(Options.Options.Create(options)));
+        }
+
+        /// <summary>
+        /// Configures the primary HttpClientHandler to use the specified api version as a query parameter.
+        /// </summary>
+        /// <param name="httpClientBuilder">The IHttpClientBuilder.</param>
+        /// <param name="version">The api version to use.</param>
         /// <param name="queryParamName">The name of the query parameter.</param>
         /// <returns>The same IHttpClientBuilder.</returns>
-        public static IHttpClientBuilder UseApiVersion(this IHttpClientBuilder httpClientBuilder, string version, string queryParamName = null)
+        public static IHttpClientBuilder UseApiVersion(this IHttpClientBuilder httpClientBuilder, string version, string queryParamName)
         {
             var options = new ApiVersionQueryOptions
             {
@@ -150,7 +166,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             if (!string.IsNullOrWhiteSpace(queryParamName))
             {
-                options.QueryParamName = queryParamName;
+                options.QueryParamName = queryParamName!;
             }
 
             return httpClientBuilder.AddHttpMessageHandler(() => new ApiVersionQueryParamDelegatingHandler(Options.Options.Create(options)));

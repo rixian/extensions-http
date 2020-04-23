@@ -120,4 +120,7 @@
   <data name="ParameterStringEmptyError" xml:space="preserve">
     <value>Parameter must be an non-empty string.</value>
   </data>
+  <data name="ParameterStringNullError" xml:space="preserve">
+    <value>Parameter cannot be null.</value>
+  </data>
 </root>

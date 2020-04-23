@@ -38,7 +38,10 @@ namespace Rixian.Extensions.Http
                 throw new ArgumentNullException(nameof(request));
             }
 
-            request.RequestUri = request.RequestUri.SetSingleQueryParam(this.options.QueryParamName ?? "api-version", this.options.Value);
+            if (!string.IsNullOrWhiteSpace(this.options.Value))
+            {
+                request.RequestUri = request.RequestUri.SetSingleQueryParam(this.options.QueryParamName ?? "api-version", this.options.Value!); // Checked with IsNullOrWhitespace
+            }
 
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }

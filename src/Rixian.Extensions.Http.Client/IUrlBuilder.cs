@@ -20,7 +20,7 @@ namespace Rixian.Extensions.Http.Client
         /// <summary>
         /// Gets or sets the fragment part of the url.
         /// </summary>
-        string Fragment { get; set; }
+        string? Fragment { get; set; }
 
         /// <summary>
         /// Gets the query parameters of the url.
