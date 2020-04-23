@@ -67,6 +67,9 @@ try {
             throw "Failure while restoring packages."
         }
     }
+    else {
+        Write-Host "Not restoring NuGet packages" -ForegroundColor $HeaderColor
+    }
 
     & "$PSScriptRoot\azure-pipelines\Set-EnvVars.ps1" -Variables $EnvVars | Out-Null
 }
