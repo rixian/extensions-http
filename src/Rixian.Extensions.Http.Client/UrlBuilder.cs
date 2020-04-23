@@ -52,7 +52,7 @@ namespace Rixian.Extensions.Http.Client
             public string Path { get; set; }
 
             /// <inheritdoc/>
-            public string Fragment { get; set; }
+            public string? Fragment { get; set; }
 
             /// <inheritdoc/>
             public Uri Uri
