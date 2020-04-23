@@ -1,9 +1,7 @@
-parameters:
-  windowsPool: windows-latest
-
 jobs:
 - job: Windows
-  pool: ${{ parameters.windowsPool }}
+  pool:
+    vmImage: windows-latest
   steps:
   - checkout: self
     clean: true
