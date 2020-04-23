@@ -2,21 +2,20 @@ trigger:
   branches:
     include:
     - master
-    - validate/*
-    - release/*
+    - 'validate/*'
+    - 'release/*'
   paths:
     exclude:
     - doc/
     - '*.md'
     - .vscode/
+    - .github/
 
 variables:
   TreatWarningsAsErrors: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   BuildConfiguration: Release
-  BuildPlatform: Any CPU
   codecov_token: 5e413578-757f-4178-8a3f-fa3f1ca0c2b2
-  ci_feed: /e08c98c0-63d6-4dc6-80ca-944e4deaf3d2
   NUGET_PACKAGES: $(Agent.TempDirectory)/.nuget/packages
   
 jobs:

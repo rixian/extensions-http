@@ -68,5 +68,14 @@ namespace Rixian.Extensions.Http.Client.Properties {
                 return ResourceManager.GetString("ParameterStringEmptyError", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter cannot be null..
+        /// </summary>
+        internal static string ParameterStringNullError {
+            get {
+                return ResourceManager.GetString("ParameterStringNullError", resourceCulture);
+            }
+        }
     }
 }

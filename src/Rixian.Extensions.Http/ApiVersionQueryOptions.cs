@@ -23,6 +23,6 @@ namespace Rixian.Extensions.Http
         /// <summary>
         /// Gets or sets the api version value.
         /// </summary>
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 }

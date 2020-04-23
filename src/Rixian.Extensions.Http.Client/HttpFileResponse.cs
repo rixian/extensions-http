@@ -104,7 +104,7 @@ namespace Rixian.Extensions.Http.Client
         {
             if (response is null)
             {
-                return NullArgumentDisallowedError("Parameter cannot be null.", nameof(response)).ToResult<HttpFileResponse>();
+                return NullArgumentDisallowedError(Properties.Resources.ParameterStringNullError, nameof(response)).ToResult<HttpFileResponse>();
             }
 
             Stream responseStream = response.Content == null ? Stream.Null : await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
