@@ -57,7 +57,7 @@ namespace Rixian.Extensions.Http
             }
             else
             {
-                this.logger.LogError("Failed to retreive token.\nCode: {Code}\nTarget: {Target}\nMessage: {Message}\nDetails: {Details}", token.Error.Code, token.Error.Target, token.Error.Message, token.Error.Details);
+                this.logger.LogError(Properties.Resources.FailedToRetrieveTokenErrorMessage, token.Error.Code, token.Error.Target, token.Error.Message, token.Error.Details);
             }
 
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
