@@ -10,9 +10,11 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using RichardSzalay.MockHttp;
+using Rixian.Extensions.Errors;
 using Rixian.Extensions.Tokens;
 using Xunit;
 using Xunit.Abstractions;
+using static Rixian.Extensions.Errors.Prelude;
 
 public class HttpClientExtensionsTests
 {
@@ -111,7 +113,7 @@ public class HttpClientExtensionsTests
         ITokenInfo tokenInfo = Substitute.For<ITokenInfo>();
         tokenInfo.AccessToken.Returns(accessToken);
         ITokenClient tokenClient = Substitute.For<ITokenClient>();
-        tokenClient.GetTokenAsync(Arg.Any<bool>()).Returns(tokenInfo);
+        tokenClient.GetTokenAsync(Arg.Any<bool>()).Returns(Result(tokenInfo));
 
         var mockHttp = new MockHttpMessageHandler();
         MockedRequest request = mockHttp
@@ -136,9 +138,9 @@ public class HttpClientExtensionsTests
         ITokenInfo tokenInfo = Substitute.For<ITokenInfo>();
         tokenInfo.AccessToken.Returns(accessToken);
         ITokenClient tokenClient = Substitute.For<ITokenClient>();
-        tokenClient.GetTokenAsync(Arg.Any<bool>()).Returns(tokenInfo);
+        tokenClient.GetTokenAsync(Arg.Any<bool>()).Returns(Result(tokenInfo));
         ITokenClientFactory tokenClientFactory = Substitute.For<ITokenClientFactory>();
-        tokenClientFactory.GetTokenClient(Arg.Any<string>()).Returns(tokenClient);
+        tokenClientFactory.GetTokenClient(Arg.Any<string>()).Returns(Result(tokenClient));
 
         var mockHttp = new MockHttpMessageHandler();
         MockedRequest request = mockHttp
@@ -171,9 +173,9 @@ public class HttpClientExtensionsTests
         ITokenInfo tokenInfo = Substitute.For<ITokenInfo>();
         tokenInfo.AccessToken.Returns(accessToken);
         ITokenClient tokenClient = Substitute.For<ITokenClient>();
-        tokenClient.GetTokenAsync(Arg.Any<bool>()).Returns(tokenInfo);
+        tokenClient.GetTokenAsync(Arg.Any<bool>()).Returns(Result(tokenInfo));
         ITokenClientFactory tokenClientFactory = Substitute.For<ITokenClientFactory>();
-        tokenClientFactory.GetTokenClient(tokenClientName).Returns(tokenClient);
+        tokenClientFactory.GetTokenClient(tokenClientName).Returns(Result(tokenClient));
 
         var mockHttp = new MockHttpMessageHandler();
         MockedRequest request = mockHttp

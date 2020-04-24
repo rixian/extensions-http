@@ -8,6 +8,8 @@ namespace Microsoft.Extensions.DependencyInjection
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Security.Authentication;
+    using Microsoft.Extensions.Logging;
+    using Rixian.Extensions.Errors;
     using Rixian.Extensions.Http;
     using Rixian.Extensions.Tokens;
 
@@ -32,13 +34,13 @@ namespace Microsoft.Extensions.DependencyInjection
                     throw new HttpClientConfigurationException("No ITokenClientFactory registered in the DI container.");
                 }
 
-                ITokenClient tokenClient = tokenClientFactory.GetTokenClient(tokenClientName);
+                Result<ITokenClient> tokenClient = tokenClientFactory.GetTokenClient(tokenClientName);
                 if (tokenClientFactory == null)
                 {
                     throw new HttpClientConfigurationException(string.Format(CultureInfo.InvariantCulture, "No ITokenClient registered with the name '{0}'.", tokenClientName));
                 }
 
-                var handler = new TokenClientDelegatingHandler(tokenClient);
+                var handler = new TokenClientDelegatingHandler(tokenClient.Value, svc.GetRequiredService<ILogger<TokenClientDelegatingHandler>>());
                 return handler;
             });
         }
@@ -49,9 +51,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="httpClientBuilder">The IHttpClientBuilder.</param>
         /// <param name="getTokenClient">Delegate that pulls the ITokenCLient instance from the DI container.</param>
         /// <returns>The same IHttpClientBuilder.</returns>
-        public static IHttpClientBuilder UseTokenClient(this IHttpClientBuilder httpClientBuilder, Func<IServiceProvider, ITokenClient> getTokenClient)
+        public static IHttpClientBuilder UseTokenClient(this IHttpClientBuilder httpClientBuilder, Func<IServiceProvider, Result<ITokenClient>> getTokenClient)
         {
-            return httpClientBuilder.AddHttpMessageHandler(svc => new TokenClientDelegatingHandler(getTokenClient(svc)));
+            return httpClientBuilder.AddHttpMessageHandler(svc => new TokenClientDelegatingHandler(getTokenClient(svc), svc.GetRequiredService<ILogger<TokenClientDelegatingHandler>>()));
         }
 
         /// <summary>
@@ -62,7 +64,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>The same IHttpClientBuilder.</returns>
         public static IHttpClientBuilder UseTokenClient(this IHttpClientBuilder httpClientBuilder, ITokenClient tokenClient)
         {
-            return httpClientBuilder.AddHttpMessageHandler(() => new TokenClientDelegatingHandler(tokenClient));
+            return httpClientBuilder.AddHttpMessageHandler(svc => new TokenClientDelegatingHandler(tokenClient, svc.GetRequiredService<ILogger<TokenClientDelegatingHandler>>()));
         }
 
         /// <summary>

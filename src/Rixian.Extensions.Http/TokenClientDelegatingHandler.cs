@@ -8,6 +8,8 @@ namespace Rixian.Extensions.Http
     using System.Net.Http.Headers;
     using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
+    using Rixian.Extensions.Errors;
     using Rixian.Extensions.Tokens;
 
     /// <summary>
@@ -16,14 +18,28 @@ namespace Rixian.Extensions.Http
     public class TokenClientDelegatingHandler : DelegatingHandler
     {
         private readonly ITokenClient tokenClient;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenClientDelegatingHandler"/> class.
         /// </summary>
         /// <param name="tokenClient">The ITokenClient to use.</param>
-        public TokenClientDelegatingHandler(ITokenClient tokenClient)
+        /// <param name="logger">The ILogger instance.</param>
+        public TokenClientDelegatingHandler(ITokenClient tokenClient, ILogger logger)
         {
             this.tokenClient = tokenClient;
+            this.logger = logger;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenClientDelegatingHandler"/> class.
+        /// </summary>
+        /// <param name="tokenClient">The ITokenClient to use.</param>
+        /// <param name="logger">The ILogger instance.</param>
+        public TokenClientDelegatingHandler(Result<ITokenClient> tokenClient, ILogger logger)
+        {
+            this.tokenClient = tokenClient.Value;
+            this.logger = logger;
         }
 
         /// <inheritdoc/>
@@ -34,10 +50,14 @@ namespace Rixian.Extensions.Http
                 throw new ArgumentNullException(nameof(request));
             }
 
-            ITokenInfo token = await this.tokenClient.GetTokenAsync().ConfigureAwait(false);
-            if (token != null)
+            Result<ITokenInfo> token = await this.tokenClient.GetTokenAsync().ConfigureAwait(false);
+            if (token.IsSuccess)
             {
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token.Value.AccessToken);
+            }
+            else
+            {
+                this.logger.LogError(Properties.Resources.FailedToRetrieveTokenErrorMessage, token.Error.Code, token.Error.Target, token.Error.Message, token.Error.Details);
             }
 
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
